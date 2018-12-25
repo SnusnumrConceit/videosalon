@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="form-inline">
                 <div class="links">
-                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/genre/add' })">
+                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/admin/genre/add' })">
                         Добавить
                     </button>
                 </div>
@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-12">
             <div class="genres-container" v-if="genres.length">
-                <table>
+                <table width="100%" class="table">
                     <thead>
                         <th>Жанр</th>
                     </thead>
@@ -25,7 +25,7 @@
                     <tr v-for="genre in genres">
                         <td>{{ genre.name }}</td>
                         <td>
-                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/genre/edit/' + genre.id })">
+                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/admin/genre/edit/' + genre.id })">
                                 Редактировать
                             </button>
                             <button class="btn btn-outline-danger" @click="remove(genre.id)">
@@ -107,10 +107,10 @@
 
 
             async loadData() {
-                const response = await axios.get('/genres');
+                const response = await axios.get('/genres', { params: { page: this.pagination.page }});
                 if (response.status === 200) {
                     this.genres = response.data.genres.data;
-                    this.genres.last_page = response.data.genres.last_page;
+                    this.pagination.last_page = response.data.genres.last_page;
                 }
             },
 

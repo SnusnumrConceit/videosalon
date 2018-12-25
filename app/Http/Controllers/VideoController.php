@@ -56,7 +56,7 @@ class VideoController extends Controller
      */
     public function search(Request $request)
     {
-        $result = Video::where('name', $request->input('keyword'))
+        $result = Video::where('name', 'LIKE', '%'.$request->input('keyword').'%')
             ->paginate(10);
         return response()->json([
             'videos' => $result
@@ -72,9 +72,17 @@ class VideoController extends Controller
     public function form(int $id)
     {
         $video = Video::findOrFail($id);
-        $movies = Product::all();
+        $movies = Product::whereDoesntHave('video')->get();
         return response()->json([
             'video' => $video,
+            'movies' => $movies
+        ], 200);
+    }
+
+    public function form_info()
+    {
+        $movies = Product::whereDoesntHave('video')->get();
+        return response()->json([
             'movies' => $movies
         ], 200);
     }

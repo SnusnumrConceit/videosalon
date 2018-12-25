@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="form-inline">
                 <div class="links">
-                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/screen/add' })">
+                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/admin/screen/add' })">
                         Добавить
                     </button>
                 </div>
@@ -17,25 +17,37 @@
         </div>
         <div class="col-md-12">
             <div class="audios-container" v-if="screens.length">
-                <table>
-                    <thead>
-                    <th>Фильм</th>
-                    <th>Трейлер</th>
-                    </thead>
-                    <tbody>
-                    <tr v-for="screen in screens">
-                        <td>{{ screen.name }}</td>
-                        <td>
-                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/screen/edit/' + screen.id })">
-                                Редактировать
-                            </button>
-                            <button class="btn btn-outline-danger" @click="remove(screen.id)">
-                                Удалить
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="card" style="width:400px" v-for="screen in screens">
+                    <img class="card-img-bottom" :src="screen.url" alt="Card image" style="width:100%">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ screen.name }}</h4>
+                        <button class="btn btn-outline-warning" @click="$router.push({ path: '/admin/screen/edit/' + screen.id })">
+                            Редактировать
+                        </button>
+                        <button class="btn btn-outline-danger" @click="remove(screen.id)">
+                            Удалить
+                        </button>
+                    </div>
+                </div>
+                <!--<table>-->
+                    <!--<thead>-->
+                    <!--<th>Фильм</th>-->
+                    <!--<th>Трейлер</th>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                    <!--<tr v-for="screen in screens">-->
+                        <!--<td>{{ screen.name }}</td>-->
+                        <!--<td>-->
+                            <!--<button class="btn btn-outline-warning" @click="$router.push({ path: '/screen/edit/' + screen.id })">-->
+                                <!--Редактировать-->
+                            <!--</button>-->
+                            <!--<button class="btn btn-outline-danger" @click="remove(screen.id)">-->
+                                <!--Удалить-->
+                            <!--</button>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
+                <!--</table>-->
                 <paginate
                         v-model="pagination.page"
                         :page-count="pagination.last_page"
@@ -108,10 +120,10 @@
 
 
             async loadData() {
-                const response = await axios.get('/screens');
+                const response = await axios.get('/screens', { params: { page: this.pagination.page }});
                 if (response.status === 200) {
                     this.screens = response.data.screens.data;
-                    this.screens.last_page = response.data.screens.last_page;
+                    this.pagination.last_page = response.data.screens.last_page;
                 }
             },
 

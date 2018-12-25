@@ -94,16 +94,24 @@
 
             async signIn() {
                 const response = await axios.post('/login', { email: this.email, password: this.pass});
-                if  (response.data.msg !== undefined) {
+                if  (response.data.message !== undefined) {
                     this.$swal('Ошибка', response.data.msg, 'error');
                     return false;
                 }
                 const token = response.data.token;
                 const user = response.data.user;
+                if (user === null || user === undefined) {
+                    this.$swal('Ошибка', 'Неверный логин и пароль', 'error');
+                    return false;
+                }
+                if (user.role_id !== 2) {
+                    this.$swal('Ошибка', 'Неверный логин и пароль', 'error');
+                    return false;
+                }
                 localStorage.setItem('token', token);
                 this.setToken();
                 this.setUser(user);
-                this.$router.push({ path: '/contracts'});
+                this.$router.push({ path: '/admin/products'});
             }
         }
     }

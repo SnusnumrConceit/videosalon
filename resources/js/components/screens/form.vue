@@ -9,11 +9,11 @@
                 <div class="form-group" v-if="movies.length">
                     <label for="">Фильм</label>
                     <select v-model="screen.product_id" class="form-control">
-                        <option value="movie.id" v-for="movie in movies">{{ movie.name }}</option>
+                        <option :value="movie.id" v-for="movie in movies">{{ movie.name }}</option>
                     </select>
                 </div>
                 <div class="form-group" v-else="">
-                    <i>Не найдено ни одного фильма. Вы можете их добавить по ссылке.</i>
+                    <i>Не найдено ни одного фильма. Вы можете их добавить по <router-link to="/admin/product/add">ссылке</router-link>.</i>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-outline-success"
@@ -28,7 +28,7 @@
                             @click="save()">
                         Добавить
                     </button>
-                    <button class="btn btn-outline-default" @click="$router.push({ path: '/screens'})">Отмена</button>
+                    <button class="btn btn-outline-default" @click="$router.push({ path: '/admin/screens'})">Отмена</button>
                 </div>
             </form>
         </div>
@@ -46,10 +46,6 @@
         },
         methods: {
             validate() {
-                if (this.screen.name === null || this.screen.name === undefined || !this.screen.name) {
-                    this.$swal('Ошибка!', 'Вы не указали название фильма', 'error');
-                    return false;
-                }
                 if (this.screen.url === null || this.screen.url === undefined || !this.screen.url) {
                     this.$swal('Ошибка!', 'Вы не указали url', 'error');
                     return false;
@@ -66,7 +62,7 @@
                     const response = await axios.post('/screens/update/' + this.screen.id, {...this.screen});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно', 'Скриншот  успешно обновлен', 'success');
-                        this.$router.push('/screens');
+                        this.$router.push('/admin/screens');
                         return false;
                     } else if (response.data.status === 'error') {
                         this.$swal('Ошибка', 'Произошла ошибка. Повторите позднее.', 'error');
@@ -76,7 +72,7 @@
                     const response = await axios.post('/screens/create', {...this.screen});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно', 'Скриншот успешно добавлен', 'success');
-                        this.$router.push('/screens');
+                        this.$router.push('/admin/screens');
                         return false;
                     } else if (response.data.status === 'error') {
                         this.$swal('Ошибка', 'Произошла ошибка. Повторите позднее.', 'error');
@@ -85,17 +81,23 @@
                 }
             },
             async loadData() {
-                const response = await axios.get('/screens/edit/' + this.$route.params.id);
+                const response = await axios.get('/screens/' + this.$route.params.id);
                 if (! response.status) throw response;
                 this.screen = response.data.screen;
-                this.movies = response.data.movies;
             },
+
+            async loadAddinationalData() {
+                const response = await axios.get('/screens/form_info');
+                if (! response.status) throw response;
+                this.movies = response.data.movies;
+            }
         },
 
         created() {
             if (this.$route.params.id) {
                 this.loadData();
             }
+            this.loadAddinationalData();
         }
     }
 </script>

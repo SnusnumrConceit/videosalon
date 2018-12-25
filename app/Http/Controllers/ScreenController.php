@@ -79,6 +79,13 @@ class ScreenController extends Controller
         ], 200);
     }
 
+    public function form_info() {
+        $movies = Product::all();
+        return response()->json([
+            'movies' => $movies
+        ], 200);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -115,7 +122,7 @@ class ScreenController extends Controller
     public function destroy(int $id)
     {
         try {
-            $screen = Screen::findOrFail($id);
+            $screen = Screen::findOrFail($id)->delete();
             return response()->json([
                 'status' => 'success'
             ], 200);

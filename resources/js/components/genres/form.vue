@@ -4,7 +4,10 @@
             <form action="">
                 <div class="form-group">
                     <label for="">Название жанра</label>
-                    <input type="text" v-model.trim="genre.name" class="form-control">
+                    <input type="text"
+                           v-model.trim="genre.name"
+                           @keydown.enter="save()"
+                           class="form-control">
                 </div>
                 <div class="form-group">
                     <button class="btn btn-outline-success"
@@ -19,7 +22,7 @@
                             @click="save()">
                         Добавить
                     </button>
-                    <button class="btn btn-outline-default" @click="$router.push({ path: '/genres'})">Отмена</button>
+                    <button class="btn btn-outline-default" @click="$router.push({ path: '/admin/genres'})">Отмена</button>
                 </div>
             </form>
         </div>
@@ -44,6 +47,17 @@
                     this.$swal('Ошибка!', 'Название жанра должно быть от 3 до 50 символов', 'error');
                     return false;
                 }
+                let regExp = /([А-ЯЁа-яё]{3,50})/;
+                let res = regExp.exec(this.genre.name);
+                if (res === null) {
+                    this.$swal('Ошибка!', 'Название жанра должно состоять из кириллистических букв', 'error');
+                    return false;
+                } else {
+                    if (res[0] !== this.genre.name) {
+                        this.$swal('Ошибка!', 'Название жанра должно состоять из кириллистических букв', 'error');
+                        return false;
+                    }
+                }
                 return true;
             },
             async save() {
@@ -52,7 +66,7 @@
                     const response = await axios.post('/genres/update/' + this.genre.id, {...this.genre});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно', 'Жанр успешно обновлен', 'success');
-                        this.$router.push('/genres');
+                        this.$router.push('/admin/genres');
                         return false;
                     } else if (response.data.status === 'error') {
                         this.$swal('Ошибка', 'Произошла ошибка. Повторите позднее.', 'error');
@@ -62,7 +76,7 @@
                     const response = await axios.post('/genres/create', {...this.genre});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно', 'Жанр успешно добавлен', 'success');
-                        this.$router.push('/genres');
+                        this.$router.push('/admin/genres');
                         return false;
                     } else if (response.data.status === 'error') {
                         this.$swal('Ошибка', 'Произошла ошибка. Повторите позднее.', 'error');

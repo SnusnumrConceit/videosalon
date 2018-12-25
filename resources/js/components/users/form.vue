@@ -46,7 +46,7 @@
                             v-else>
                         Добавить
                     </button>
-                    <button class="btn btn-outline-default" @click="$router.push({ path: '/users' })">
+                    <button class="btn btn-outline-default" @click="$router.push({ path: '/admin/users' })">
                         Отменить
                     </button>
                 </div>
@@ -102,6 +102,50 @@
                     this.$swal('Ошибка', 'Длина фамилии должна быть от 4 до 30 символов', 'error');
                     return false;
                 }
+                let emailRegExp = /([A-Za-z]{1,}[@][A-Za-z]{4,5}[.][A-Za-z]{1,3})/;
+                let passwordRegExp = /([A-Za-z0-9]{6,50})/;
+                let fnameRegExp = /([А-ЯЁа-яё]{3,50})/;
+                let lnameRegExp = /([А-ЯЁа-яё]{3,50})/;
+                let res = emailRegExp.exec(this.user.email);
+                if (res === null) {
+                    this.$swal('Ошибка!', 'Неверный формат email', 'error');
+                    return false;
+                } else {
+                    if (res[0] !== this.user.email) {
+                        this.$swal('Ошибка!', 'Неверный формат email', 'error');
+                        return false;
+                    }
+                }
+                res = passwordRegExp.exec(this.user.password);
+                if (res === null) {
+                    this.$swal('Ошибка!', 'Пароль должен состоять из латинских букв и цифр', 'error');
+                    return false;
+                } else {
+                    if (res[0] !== this.user.password) {
+                        this.$swal('Ошибка!', 'Пароль должен состоять из латинских букв и цифр', 'error');
+                        return false;
+                    }
+                }
+                res = fnameRegExp.exec(this.user.first_name);
+                if (res === null) {
+                    this.$swal('Ошибка!', 'Имя должно состоять из кириллистических букв', 'error');
+                    return false;
+                } else {
+                    if (res[0] !== this.user.first_name) {
+                        this.$swal('Ошибка!', 'Имя должно состоять из кириллистических букв', 'error');
+                        return false;
+                    }
+                }
+                res = lnameRegExp.exec(this.user.last_name);
+                if (res === null) {
+                    this.$swal('Ошибка!', 'Фамилия должна состоять из кириллистических букв', 'error');
+                    return false;
+                } else {
+                    if (res[0] !== this.user.last_name) {
+                        this.$swal('Ошибка!', 'Фамилия должна состоять из кириллистических букв', 'error');
+                        return false;
+                    }
+                }
                 return true;
 
             },
@@ -122,7 +166,7 @@
                     const response = await axios.post('/users/update/' + this.$route.params.id, {...this.user});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно!', 'Запись о пользователе успешно добавлена', 'success');
-                        this.$router.push({ path: '/users' });
+                        this.$router.push({ path: '/admin/users' });
                         return true;
                     } else {
                         this.$swal('Ошибка!', 'Произошла ошибка. Повторите позднее', 'error');
@@ -133,7 +177,7 @@
                     const response = await axios.post('/users/create', {...this.user});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно!', 'Запись о пользователе успешно добавлена', 'success');
-                        this.$router.push({ path: '/users' });
+                        this.$router.push({ path: '/admin/users' });
                         return true;
                     } else {
                         this.$swal('Ошибка!', 'Произошла ошибка. Повторите позднее', 'error');

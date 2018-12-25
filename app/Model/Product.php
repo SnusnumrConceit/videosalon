@@ -12,21 +12,29 @@ class Product extends Model
 
     public function audios()
     {
-//        return $this->belongsToMany('App\Model\Audio', 'audios', 'id', 'audio_id');
+        return $this->belongsToMany(
+            'App\Model\Audio',
+            'audios_products',
+            'product_id',
+            'audio_id');
     }
 
     public function genres()
     {
-//        return $this->belongsToMany('App\Model\Audio', 'audios', 'id', 'audio_id');
+        return $this->belongsToMany(
+            'App\Model\Genre',
+            'genres_products',
+            'product_id',
+            'genre_id');
     }
 
     public function screens()
     {
-        return $this->belongsToMany('App\Model\Audio', 'screens', 'product_id', 'id');
+        return $this->hasMany('App\Model\Screen', 'screens', 'product_id', 'id');
     }
 
-    public function videos()
+    public function video()
     {
-        return $this->belongsToMany('App\Model\Audio', 'videos', 'video_id', 'id');
+        return $this->hasOne('App\Model\Video', 'product_id', 'id');
     }
 }

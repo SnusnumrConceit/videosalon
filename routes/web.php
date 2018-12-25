@@ -49,7 +49,8 @@ Route::group(['prefix' => 'videos'], function () {
     Route::post('/update/{id}', 'VideoController@update')
         ->where('id', '[0-9]+');
     Route::post('/delete/{id}', 'VideoController@destroy')
-        ->where('id', '[0-9]+');;
+        ->where('id', '[0-9]+');
+    Route::get('/form_info', 'VideoController@form_info');
 });
 
 Route::group(['prefix' => 'screens'], function () {
@@ -62,6 +63,7 @@ Route::group(['prefix' => 'screens'], function () {
         ->where('id', '[0-9]+');
     Route::post('/delete/{id}', 'ScreenController@destroy')
         ->where('id', '[0-9]+');
+    Route::get('/form_info', 'ScreenController@form_info');
 });
 
 Route::group(['prefix' => 'users'], function () {
@@ -86,4 +88,25 @@ Route::group(['prefix' => 'products'], function () {
         ->where('id', '[0-9]+');
     Route::post('/delete/{id}', 'ProductController@destroy')
         ->where('id', '[0-9]+');
+    Route::get('/form_info', 'ProductController@form_info');
 });
+
+Route::group(['prefix' => 'orders'], function () {
+    Route::get('/', 'OrderController@store');
+    Route::get('/{id}', 'OrderController@form')
+        ->where('id', '[0-9]+');
+    Route::get('/search', 'OrderController@search');
+    Route::post('/create', 'OrderController@create');
+    Route::post('/update/{id}', 'OrderController@update')
+        ->where('id', '[0-9]+');
+    Route::post('/delete/{id}', 'OrderController@destroy')
+        ->where('id', '[0-9]+');
+    Route::get('/form_info', 'OrderController@form_info');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/login', 'UserController@login');
+Route::post('/logout', 'UserController@logout');
+Route::get('/auth', 'UserController@getUser');

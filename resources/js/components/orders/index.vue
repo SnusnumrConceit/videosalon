@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="form-inline">
                 <div class="links">
-                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/order/add' })">
+                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/admin/order/add' })">
                         Добавить
                     </button>
                 </div>
@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-12">
             <div class="orders-container" v-if="orders.length">
-                <table>
+                <table width="100%" class="table">
                     <thead>
                         <th>Номер заказа</th>
                         <th>Заказчик</th>
@@ -27,9 +27,13 @@
                     </thead>
                     <tbody>
                     <tr v-for="order in orders">
-                        <td>{{ order.name }}</td>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.user.last_name }} {{ order.user.first_name }}</td>
+                        <td>{{ order.product.name }}</td>
+                        <td>{{ order.product.price }}</td>
+                        <td>{{ activity_format(order.product.activity) }}</td>
                         <td>
-                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/order/edit/' + order.id })">
+                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/admin/order/edit/' + order.id })">
                                 Редактировать
                             </button>
                             <button class="btn btn-outline-danger" @click="remove(order.id)">
@@ -82,6 +86,13 @@
             }
         },
         methods: {
+            activity_format(id) {
+              switch (id) {
+                  case '1': return 'На прокат';
+                  case '2': return 'Покупка';
+              }
+            },
+
             switchPage(page) {
                 this.pagination.page = page;
                 if (! this.search.is_search) {
@@ -111,17 +122,19 @@
 
 
             async loadData() {
-                const response = await axios.get('/orders');
+                const response = await axios.get('/orders', { params: { page: this.pagination.page }});
                 if (response.status === 200) {
                     this.orders = response.data.orders.data;
-                    this.orders.last_page = response.data.orders.last_page;
+                    this.pagination.last_page = response.data.orders.last_page;
                 }
             },
 
             async searchData() {
                 let response = await axios.get('/orders/search/', { params: { keyword: this.search.keyword, page: this.pagination.page } });
                 if (! response.status) throw response;
-                if (response.data.status === 'success') {
+                console.log('поиск без ошибок');
+                if (response.status === 200) {
+                    console.log('200?');
                     this.orders = response.data.orders.data;
                     this.pagination.last_page = response.data.orders.last_page;
                 } else if (response.data.status === 'error') {
@@ -134,6 +147,12 @@
 
         created() {
             this.loadData();
+        },
+
+        watch: {
+            'search.keyword': function () {
+                this.searchData();
+            }
         }
     }
 </script>

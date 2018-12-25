@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Model\Order;
+use App\Model\Product;
+use App\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -17,8 +19,8 @@ class OrderController extends Controller
         try {
             $order = new Order();
             $order->fill([
-                'user_id' => $request->input('user'),
-                'product_id' => $request->input('product')
+                'user_id' => $request->input('user_id'),
+                'product_id' => $request->input('product_id')
             ]);
             $order->save();
             return response()->json([
@@ -40,7 +42,7 @@ class OrderController extends Controller
      */
     public function store()
     {
-        $orders = Order::paginate(10);
+        $orders = Order::with(['product', 'user'])->paginate(10);
         return response()->json([
             'orders' => $orders
         ], 200);
@@ -54,7 +56,12 @@ class OrderController extends Controller
      */
     public function search(Request $request)
     {
-
+        $orders = Order::whereHas('user', function ($q) use ($request) {
+            $q->where('last_name', 'LIKE', '%'.$request->input('keyword').'%');
+        })->with(['user', 'product'])->paginate(10);
+        return response()->json([
+            'orders' => $orders
+        ], 200);
     }
 
     /**
@@ -65,9 +72,19 @@ class OrderController extends Controller
      */
     public function form(int $id)
     {
-        $order = Order::findOrFail($id);
+        $order = Order::with(['product', 'user'])->findOrFail($id);
         return response()->json([
             'order' => $order
+        ], 200);
+    }
+
+    public function form_info()
+    {
+        $users = User::where('role_id', 1)->get();
+        $products = Product::all();
+        return response()->json([
+            'users' => $users,
+            'movies' => $products
         ], 200);
     }
 
@@ -83,8 +100,8 @@ class OrderController extends Controller
         try {
             $order = Order::findOrFail($id);
             $order->fill([
-                'user_id' => $request->input('user'),
-                'product_id' => $request->input('product')
+                'user_id' => $request->input('user_id'),
+                'product_id' => $request->input('product_id')
             ]);
             $order->save();
             return response()->json([

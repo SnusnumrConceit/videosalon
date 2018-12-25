@@ -31,7 +31,7 @@ const ifNotAuthenticated = (to, from, next) => {
         next()
         return
     }
-    next('/contracts')
+    next('/admin/products')
 };
 
 const ifAuthenticated = (to, from, next) => {
@@ -45,118 +45,118 @@ const ifAuthenticated = (to, from, next) => {
 
 export const routes = [
     {
-        path: '/users',
+        path: '/admin/users',
         component: Users,
         // beforeEnter: ifAuthenticated
     },
     {
-        path: '/user/add',
+        path: '/admin/user/add',
         component: UserForm,
         // beforeEnter: ifAuthenticated
     },
     {
-        path: '/user/edit/:id',
+        path: '/admin/user/edit/:id',
         component: UserForm,
         // beforeEnter: ifAuthenticated
     },
     {
-        path: '/audios',
+        path: '/admin/audios',
         component: Audios,
-        // beforeEnter: ifNotAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/audio/add',
+        path: '/admin/audio/add',
         component: AudioForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/audio/edit/:id',
+        path: '/admin/audio/edit/:id',
         component: AudioForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/genres',
+        path: '/admin/genres',
         component: Genres,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/genre/add',
+        path: '/admin/genre/add',
         component: GenreForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/genre/edit/:id',
+        path: '/admin/genre/edit/:id',
         component: GenreForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/screens',
+        path: '/admin/screens',
         component: Screens,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/screen/add',
+        path: '/admin/screen/add',
         component: ScreenForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/screen/edit/:id',
+        path: '/admin/screen/edit/:id',
         component: ScreenForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/videos',
+        path: '/admin/videos',
         component: Videos,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/video/add',
+        path: '/admin/video/add',
         component: VideoForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/video/edit/:id',
+        path: '/admin/video/edit/:id',
         component: VideoForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/orders',
+        path: '/admin/orders',
         component: Orders,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/order/add',
+        path: '/admin/order/add',
         component: OrderForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/order/edit/:id',
+        path: '/admin/order/edit/:id',
         component: OrderForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/products',
+        path: '/admin/products',
         component: Products,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/product/add',
+        path: '/admin/product/add',
         component: ProductForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
-        path: '/product/edit/:id',
+        path: '/admin/product/edit/:id',
         component: ProductForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/login',
         component: Login,
-        // beforeEnter: ifNotAuthenticated
+        beforeEnter: ifNotAuthenticated
     },
     {
         path: '/logout',
         component: Logout,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     }
 ];

@@ -14,8 +14,24 @@ class CreateAudiosProductsTable extends Migration
     public function up()
     {
         Schema::create('audios_products', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+            $table->unsignedInteger('audio_id')
+                ->comment('идентификатор озвучки');
+            $table->unsignedInteger('product_id')
+                ->comment('идентификатор фильма');
+        });
+
+        Schema::table('audios_products', function (Blueprint $table) {
+           $table->foreign('audio_id')
+                ->references('id')
+                ->on('audio')
+                ->onDelete('cascade');
+        });
+
+        Schema::table('audios_products', function (Blueprint $table) {
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products')
+                ->onDelete('cascade');
         });
     }
 
@@ -26,6 +42,10 @@ class CreateAudiosProductsTable extends Migration
      */
     public function down()
     {
+        Schema::table('audios_products', function (Blueprint $table) {
+           $table->dropForeign(['product_id']);
+            $table->dropForeign(['audio_id']);
+        });
         Schema::dropIfExists('audios_products');
     }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Audio;
+use App\Model\AudioProduct;
+use App\Model\GenreProduct;
 use App\Model\Product;
+use App\Model\Genre;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -25,6 +29,30 @@ class ProductController extends Controller
                 'activity' => $request->input('activity'),
             ]);
             $product->save();
+            if ($request->input('audios') !== null) {
+                $product_audios =  $request->input('audios');
+                $pa = new AudioProduct();
+                AudioProduct::where('product_id', $product->id)->delete();
+                foreach ($product_audios as $audio) {
+                    if (! isset($audio)) continue;
+                    $pa->insert([
+                        'audio_id' => $audio,
+                        'product_id' => $product->id,
+                    ]);
+                }
+            }
+            if ($request->input('genres') !== null) {
+                $product_genres =  $request->input('genres');
+                $pg = new GenreProduct();
+                GenreProduct::where('product_id', $product->id)->delete();
+                foreach ($product_genres as $genre) {
+                    if (! isset($genre)) continue;
+                    $pg->insert([
+                        'genre_id' => $genre,
+                        'product_id' => $product->id,
+                    ]);
+                }
+            }
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -58,7 +86,7 @@ class ProductController extends Controller
      */
     public function search(Request $request)
     {
-        $products = Product::where('name', $request->input('keyword'))
+        $products = Product::where('name', 'LIKE', '%'.$request->input('keyword').'%')
             ->paginate(10);
         return response()->json([
             'products' => $products
@@ -73,9 +101,19 @@ class ProductController extends Controller
      */
     public function form(int $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with(['audios', 'genres'])->findOrFail($id);
         return response()->json([
             'product' => $product
+        ], 200);
+    }
+
+    public function form_info()
+    {
+        $audios = Audio::all();
+        $genres = Genre::all();
+        return response()->json([
+            'audios' => $audios,
+            'genres' => $genres
         ], 200);
     }
 
@@ -99,6 +137,30 @@ class ProductController extends Controller
                 'activity' => $request->input('activity'),
             ]);
             $product->save();
+            if ($request->input('audios') !== null) {
+                $product_audios =  $request->input('audios');
+                $pa = new AudioProduct();
+                AudioProduct::where('product_id', $product->id)->delete();
+                foreach ($product_audios as $audio) {
+                    if (! isset($audio)) continue;
+                    $pa->insert([
+                        'audio_id' => $audio,
+                        'product_id' => $product->id,
+                    ]);
+                }
+            }
+            if ($request->input('genres') !== null) {
+                $product_genres =  $request->input('genres');
+                $pg = new GenreProduct();
+                GenreProduct::where('product_id', $product->id)->delete();
+                foreach ($product_genres as $genre) {
+                    if (! isset($genre)) continue;
+                    $pg->insert([
+                        'genre_id' => $genre,
+                        'product_id' => $product->id,
+                    ]);
+                }
+            }
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -120,6 +182,8 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id)->delete();
+            AudioProduct::where('product_id', $id)->delete();
+            GenreProduct::where('product_id', $id)->delete();
             return response()->json([
                 'status' => 'success'
             ], 200);

@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="form-inline">
                 <div class="links">
-                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/user/add' })">
+                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/admin/user/add' })">
                         Добавить
                     </button>
                 </div>
@@ -16,7 +16,7 @@
             </div>
             <div class="col-md-12">
                 <div class="users-container" v-if="users.length">
-                    <table class="table">
+                    <table class="table" width="100%">
                         <thead>
                         <tr>
                             <th>Email/Логин</th>
@@ -31,9 +31,9 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.first_name }}</td>
                             <td>{{ user.last_name }}</td>
-                            <td>{{ user.role_id }}</td>
+                            <td>{{ role(user.role_id) }}</td>
                             <td>
-                                <a @click="$router.push({ path: '/user/edit/' + user.id })">
+                                <a @click="$router.push({ path: '/admin/user/edit/' + user.id })">
                                     <i class="text-success fa fa-gear"></i>
                                 </a>
                                 <a @click="remove(user.id)">
@@ -92,6 +92,12 @@
         },
 
         methods: {
+            role(id) {
+                switch (id) {
+                    case 1: return 'Пользователь';
+                    case 2: return 'Администратор';
+                }
+            },
 
             switchPage(page) {
                 this.pagination.page = page;
@@ -120,7 +126,7 @@
                 let response = await axios.get('/users', { params: { 'page': this.pagination.page } });
                 if (response.status === 200) {
                     this.users = response.data.users.data;
-                    this.users.last_page = response.data.users.last_page;
+                    this.pagination.last_page = response.data.users.last_page;
                 }
             },
 

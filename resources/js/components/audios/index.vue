@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="form-inline">
                 <div class="links">
-                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/audio/add' })">
+                    <button class="btn btn-outline-primary" @click="$router.push({ path: '/admin/audio/add' })">
                         Добавить
                     </button>
                 </div>
@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-12">
             <div class="audios-container" v-if="audios.length">
-                <table>
+                <table width="100%" class="table">
                     <thead>
                     <th>Студия озвучки</th>
                     </thead>
@@ -25,7 +25,7 @@
                     <tr v-for="audio in audios">
                         <td>{{ audio.name }}</td>
                         <td>
-                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/audio/edit/' + audio.id })">
+                            <button class="btn btn-outline-warning" @click="$router.push({ path: '/admin/audio/edit/' + audio.id })">
                                 Редактировать
                             </button>
                             <button class="btn btn-outline-danger" @click="remove(audio.id)">
@@ -107,10 +107,10 @@
 
 
             async loadData() {
-                const response = await axios.get('/audios');
+                const response = await axios.get('/audios', { params: { page: this.pagination.page} });
                 if (response.status === 200) {
                     this.audios = response.data.audios.data;
-                    this.audios.last_page = response.data.audios.last_page;
+                    this.pagination.last_page = response.data.audios.last_page;
                 }
             },
 

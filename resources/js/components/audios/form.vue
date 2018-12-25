@@ -4,7 +4,7 @@
             <form action="">
                 <div class="form-group">
                     <label for="">Студия озвучки</label>
-                    <input type="text" v-model.trim="audio.name" class="form-control">
+                    <input type="text" v-model.trim="audio.name" class="form-control" @keydown.enter="save()">
                 </div>
                 <div class="form-group">
                     <button class="btn btn-outline-success"
@@ -19,7 +19,7 @@
                             @click="save()">
                         Добавить
                     </button>
-                    <button class="btn btn-outline-default" @click="$router.push({ path: '/audios'})">Отмена</button>
+                    <button class="btn btn-outline-default" @click="$router.push({ path: '/admin/audios'})">Отмена</button>
                 </div>
             </form>
         </div>
@@ -44,6 +44,17 @@
                     this.$swal('Ошибка!', 'Название студии озвучки должно быть от 3 до 50 символов', 'error');
                     return false;
                 }
+                let regExp = /([A-Za-z ]{3,50})|([А-ЯЁа-яё ]{3,50})/;
+                let res = regExp.exec(this.audio.name);
+                if (res === null) {
+                    this.$swal('Ошибка!', 'Название студии озвучки должно состоять из латинский или кириллистических букв', 'error');
+                    return false;
+                } else {
+                    if (res[0] !== this.audio.name) {
+                        this.$swal('Ошибка!', 'Название студии озвучки должно состоять из латинский или кириллистических букв', 'error');
+                        return false;
+                    }
+                }
                 return true;
             },
             async save() {
@@ -52,7 +63,7 @@
                     const response = await axios.post('/audios/update/' + this.audio.id, {...this.audio});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно', 'Запись об озвучке успешно обновлена', 'success');
-                        this.$router.push('/audios');
+                        this.$router.push('/admin/audios');
                         return false;
                     } else if (response.data.status === 'error') {
                         this.$swal('Ошибка', 'Произошла ошибка. Повторите позднее.', 'error');
@@ -62,7 +73,7 @@
                     const response = await axios.post('/audios/create', {...this.audio});
                     if (response.data.status === 'success') {
                         this.$swal('Успешно', 'Запись об озвучке успешно обновлена', 'success');
-                        this.$router.push('/audios');
+                        this.$router.push('/admin/audios');
                         return false;
                     } else if (response.data.status === 'error') {
                         this.$swal('Ошибка', 'Произошла ошибка. Повторите позднее.', 'error');

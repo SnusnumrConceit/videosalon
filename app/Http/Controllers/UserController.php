@@ -5,17 +5,48 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function login(Request $request)
     {
-        //
+        try {
+            $this->validate($request, [
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
+            $credentials = $request->only('email', 'password');
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Неверный логин или пароль'
+                ]);
+            }
+        } catch (JWTException $error ) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Could\'t create token'
+            ]);
+        }
+        $user = Auth::attempt($credentials);
+        if (Auth::user()->role_id !== 2) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Неверный логин или пароль'
+            ]);
+        }
+        return response()->json([
+            'token' => $token,
+            'user' => Auth::user()
+        ], 200);
+    }
+
+    public function logout()
+    {
+        Auth::logout();
     }
 
     /**
@@ -137,5 +168,10 @@ class UserController extends Controller
                 'msg' => $error->getMessage()
             ], 200);
         }
+    }
+
+    public function getUser()
+    {
+        return response()->json([ 'user' => Auth::user(), 'status' => 'success'], 200);
     }
 }
