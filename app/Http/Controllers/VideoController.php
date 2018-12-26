@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Product;
 use App\Model\Video;
 use Illuminate\Http\Request;
+use App\Model\Log;
 
 class VideoController extends Controller
 {
@@ -23,6 +24,14 @@ class VideoController extends Controller
                 'product_id' => $request->input('product_id')
             ]);
             $video->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление видео',
+                'object' => $video->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -104,6 +113,14 @@ class VideoController extends Controller
                 'product_id' => $request->input('product_id')
             ]);
             $video->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление информации о видео',
+                'object' => $video->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -124,7 +141,17 @@ class VideoController extends Controller
     public function destroy(int $id)
     {
         try {
-            $video = Video::findOrFail($id)->delete();
+            $video = Video::findOrFail($id);
+            $data = $video;
+            $video->delete();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление видео',
+                'object' => $data->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ]);

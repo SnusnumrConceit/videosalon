@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Audio;
 use App\Model\AudioProduct;
 use App\Model\GenreProduct;
+use App\Model\Log;
 use App\Model\Product;
 use App\Model\Genre;
 use Illuminate\Http\Request;
@@ -53,6 +54,14 @@ class ProductController extends Controller
                     ]);
                 }
             }
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление фильма',
+                'object' => $product->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -161,6 +170,14 @@ class ProductController extends Controller
                     ]);
                 }
             }
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление информации о фильме',
+                'object' => $product->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -181,9 +198,19 @@ class ProductController extends Controller
     public function destroy(int $id)
     {
         try {
-            $product = Product::findOrFail($id)->delete();
+            $product = Product::findOrFail($id);
+            $name = $product->name;
+            $product->delete();
             AudioProduct::where('product_id', $id)->delete();
             GenreProduct::where('product_id', $id)->delete();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление фильма',
+                'object' => $name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);

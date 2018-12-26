@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Log;
 use App\Model\Product;
 use App\Model\Screen;
 use Illuminate\Http\Request;
@@ -22,6 +23,14 @@ class ScreenController extends Controller
                 'product_id' => $request->input('product_id'),
             ]);
             $screen->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление',
+                'object' => 'скриншот'
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -102,6 +111,14 @@ class ScreenController extends Controller
                 'product_id' => $request->input('product_id'),
             ]);
             $screen->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление',
+                'object' => 'скриншот'
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -123,6 +140,14 @@ class ScreenController extends Controller
     {
         try {
             $screen = Screen::findOrFail($id)->delete();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление',
+                'object' => 'скриншот'
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);

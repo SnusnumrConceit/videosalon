@@ -6,6 +6,7 @@ use App\Model\Order;
 use App\Model\Product;
 use App\User;
 use Illuminate\Http\Request;
+use App\Model\Log;
 
 class OrderController extends Controller
 {
@@ -23,6 +24,17 @@ class OrderController extends Controller
                 'product_id' => $request->input('product_id')
             ]);
             $order->save();
+
+            $user = User::findOrFail($request->input('user_id'));
+            $product = Product::findOrFail($request->input('product_id'));
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление заказа',
+                'object' => 'Пользователь: '.$user->last_name.' '.$user->first_name.' Заказ: '.$product->name.' '.$product->activity
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -104,6 +116,17 @@ class OrderController extends Controller
                 'product_id' => $request->input('product_id')
             ]);
             $order->save();
+
+            $user = User::findOrFail($request->input('user_id'));
+            $product = Product::findOrFail($request->input('product_id'));
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление сведений о заказе',
+                'object' => 'Пользователь: '.$user->last_name.' '.$user->first_name.' Заказ: '.$product->name.' '.$product->activity
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -124,7 +147,20 @@ class OrderController extends Controller
     public function destroy(int $id)
     {
         try {
-            $order = Order::findOrFail($id)->delete();
+            $order = Order::findOrFail($id);
+            $data = $order;
+            $order->delete();
+
+            $user = User::findOrFail($data->user_id);
+            $product = Product::findOrFail($data->product_id);
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление заказа',
+                'object' => 'Пользователь: '.$user->last_name.' '.$user->first_name.' Заказ: '.$product->name.' '.$product->activity
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Audio;
 use Illuminate\Http\Request;
 use Symfony\Component\Routing\Matcher\RedirectableUrlMatcher;
+use App\Model\Log;
 
 class AudioController extends Controller
 {
@@ -26,6 +27,14 @@ class AudioController extends Controller
             $audio = new Audio();
             $audio->fill(['name' => $request->input('name')]);
             $audio->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление озвучки',
+                'object' => $audio->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -93,6 +102,14 @@ class AudioController extends Controller
             $audio = Audio::findOrFail($id);
             $audio->fill(['name' => $request->input('name')]);
             $audio->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление информации об озвучке',
+                'object' => $audio->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -113,7 +130,17 @@ class AudioController extends Controller
     public function destroy(int $id)
     {
         try {
-            $audio = Audio::findOrFail($id)->delete();
+            $audio = Audio::findOrFail($id);
+            $data = $audio;
+            $audio->delete();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление озвучки',
+                'object' => $data->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);

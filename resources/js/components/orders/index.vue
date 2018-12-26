@@ -113,10 +113,10 @@
             async remove(id) {
                 let response = await axios.post('/orders/delete/' + id);
                 if (response.data.status === 'success') {
-                    this.$swal('Успешно!', 'Запись об озвучке успешно удалена!', 'success');
+                    this.$swal('Успешно!', 'Запись о заказе успешно удалена!', 'success');
                     this.loadData();
                 } else {
-                    this.$swal('Ошибка!', 'Не удалось удалить запись об озвучке!', 'error');
+                    this.$swal('Ошибка!', 'Не удалось удалить запись о заказе!', 'error');
                 }
             },
 

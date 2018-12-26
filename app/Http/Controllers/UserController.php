@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Log;
 
 class UserController extends Controller
 {
@@ -66,6 +67,14 @@ class UserController extends Controller
                 'role_id' => $request->input('role_id')
             ]);
             $user->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление пользователя',
+                'object' => $user->email.' '.$user->last_name.' '.$user->first_name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ]);
@@ -138,6 +147,14 @@ class UserController extends Controller
                 'role_id' => $request->input('role_id')
             ]);
             $user->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление пользователя',
+                'object' => $user->email.' '.$user->last_name.' '.$user->first_name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ]);
@@ -158,7 +175,17 @@ class UserController extends Controller
     public function destroy(int $id)
     {
         try {
-            $user = User::findOrFail($id)->delete();
+            $user = User::findOrFail($id);
+            $data = $user;
+            $user->delete();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление пользователя',
+                'object' => $data->email.' '.$data->last_name.' '.$data->first_name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Genre;
 use Illuminate\Http\Request;
 use Symfony\Component\Routing\Matcher\RedirectableUrlMatcher;
+use App\Model\Log;
 
 class GenreController extends Controller
 {
@@ -20,6 +21,14 @@ class GenreController extends Controller
             $genre = new Genre();
             $genre->fill(['name' => $request->input('name')]);
             $genre->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление жанра',
+                'object' => $genre->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -81,6 +90,14 @@ class GenreController extends Controller
             $genre = Genre::findOrFail($id);
             $genre->fill(['name' => $request->input('name')]);
             $genre->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'обновление информации о жанре',
+                'object' => $genre->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
@@ -101,7 +118,17 @@ class GenreController extends Controller
     public function destroy(int $id)
     {
         try {
-            $genre = Genre::findOrFail($id)->delete();
+            $genre = Genre::findOrFail($id);
+            $data = $genre;
+            $genre->delete();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'удаление жанра',
+                'object' => $data->name
+            ]);
+            $log->save();
+
             return response()->json([
                 'status' => 'success'
             ], 200);
