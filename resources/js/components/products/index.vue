@@ -137,7 +137,6 @@
                     this.$swal('Ошибка!', response.data.msg, 'error');
                     return false;
                 }
-
             },
         },
 

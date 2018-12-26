@@ -58,7 +58,7 @@
                 const response = await axios.get('/auth');
                 if (! response.status) throw response;
                 if (response.data.user === null) {
-                    this.$router.push({ path: '/login'});
+                    this.$router.push({ path: '/'});
                     console.log(response.data.user);
                     return false;
                 }

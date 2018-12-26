@@ -1,3 +1,4 @@
+//Админка
 import Audios from './components/audios/index.vue';
 import AudioForm from './components/audios/form.vue';
 
@@ -23,6 +24,11 @@ import Login from './components/auth/sign_in.vue';
 import Logout from './components/auth/logout.vue';
 
 
+//UI
+import UI from './components/ui/main.vue';
+import Cabinet from './components/ui/cabinet.vue';
+import ProductDetail from './components/ui/product_detail.vue'
+
 import store from './store/modules/auth.js';
 
 const ifNotAuthenticated = (to, from, next) => {
@@ -40,24 +46,37 @@ const ifAuthenticated = (to, from, next) => {
         next()
         return
     }
-    next('/login')
+    // next('/login')
+    next('/')
 };
 
 export const routes = [
     {
+      path: '/',
+      component: UI,
+    },
+    {
+        path: '/cabinet/:id',
+        component: Cabinet,
+    },
+    {
+        path: '/movie/:id',
+        component: ProductDetail,
+    },
+    {
         path: '/admin/users',
         component: Users,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/admin/user/add',
         component: UserForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/admin/user/edit/:id',
         component: UserForm,
-        // beforeEnter: ifAuthenticated
+        beforeEnter: ifAuthenticated
     },
     {
         path: '/admin/audios',
