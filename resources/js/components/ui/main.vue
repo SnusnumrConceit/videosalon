@@ -1,21 +1,21 @@
 <template>
     <div class="row">
-        <div class="collapse navbar-collapse col-md-12" id="navbarSupportedContent">
-            <!-- Right Side Of Navbar -->
-            <ul class="navbar-nav mr-auto pull-right" v-if="token && user">
+        <!--<div class="collapse navbar-collapse col-md-12" id="navbarSupportedContent">-->
+            <!--&lt;!&ndash; Right Side Of Navbar &ndash;&gt;-->
+            <!--<ul class="navbar-nav mr-auto pull-right" v-if="token && user">-->
 
-                <li class="nav-item">
-                    <a>
-                        {{ user.last_name + ' ' + user.first_name }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <router-link to="/logout">
-                        Выйти
-                    </router-link>
-                </li>
-            </ul>
-        </div>
+                <!--<li class="nav-item">-->
+                    <!--<a>-->
+                        <!--{{ user.last_name + ' ' + user.first_name }}-->
+                    <!--</a>-->
+                <!--</li>-->
+                <!--<li class="nav-item">-->
+                    <!--<router-link to="/logout">-->
+                        <!--Выйти-->
+                    <!--</router-link>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
         <div class="col-md-12">
             <div class="products-section" v-if="products.length" style="display: inline-flex">
                 <div class="card col-md-2" v-for="product in products">

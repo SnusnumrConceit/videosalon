@@ -49,15 +49,17 @@
             <div class="form-group">
                 <button class="btn btn-outline-primary"
                         @click="save()"
+                        type="button"
                         v-if="$route.params.id">
                     Сохранить
                 </button>
                 <button class="btn btn-outline-primary"
+                        type="button"
                         @click="save()"
                         v-else>
                     Добавить
                 </button>
-                <button class="btn btn-outline-default" @click="$router.push({ path: '/admin/products' })">
+                <button class="btn btn-outline-default" @click="$router.push({ path: '/admin/products' })" type="button">
                     Отменить
                 </button>
             </div>

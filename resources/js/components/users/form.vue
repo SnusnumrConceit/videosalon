@@ -37,12 +37,14 @@
                 </div>
                 <div class="form-group">
                     <button class="btn btn-outline-primary"
+                            type="button"
                             @click="save()"
                             v-if="$route.params.id">
                         Сохранить
                     </button>
                     <button class="btn btn-outline-primary"
                             @click="save()"
+                            type="button"
                             v-else>
                         Добавить
                     </button>
