@@ -30,7 +30,7 @@ class Product extends Model
 
     public function screens()
     {
-        return $this->hasMany('App\Model\Screen', 'screens', 'product_id', 'id');
+        return $this->hasMany('App\Model\Screen', 'product_id', 'id');
     }
 
     public function video()

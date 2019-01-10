@@ -177,7 +177,7 @@
 
                 } else {
                     const response = await axios.post('/users/create', {...this.user});
-                    if (response.data.status === 'success') {
+                    if (response.status === 200) {
                         this.$swal('Успешно!', 'Запись о пользователе успешно добавлена', 'success');
                         this.$router.push({ path: '/admin/users' });
                         return true;

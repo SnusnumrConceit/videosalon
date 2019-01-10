@@ -110,7 +110,7 @@ class ProductController extends Controller
      */
     public function form(int $id)
     {
-        $product = Product::with(['audios', 'genres'])->findOrFail($id);
+        $product = Product::with(['audios', 'genres', 'video', 'screens'])->findOrFail($id);
         return response()->json([
             'product' => $product
         ], 200);

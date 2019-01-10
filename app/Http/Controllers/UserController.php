@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Model\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -32,13 +33,13 @@ class UserController extends Controller
                 'msg' => 'Could\'t create token'
             ]);
         }
-        $user = Auth::attempt($credentials);
-        if (Auth::user()->role_id !== 2) {
-            return response()->json([
-                'status' => 'error',
-                'msg' => 'Неверный логин или пароль'
-            ]);
-        }
+//        $user = Auth::attempt($credentials);
+//        if (Auth::user()->role_id !== 2) {
+//            return response()->json([
+//                'status' => 'error',
+//                'msg' => 'Неверный логин или пароль'
+//            ]);
+//        }
         return response()->json([
             'token' => $token,
             'user' => Auth::user()
@@ -48,6 +49,35 @@ class UserController extends Controller
     public function logout()
     {
         Auth::logout();
+    }
+
+    public function registration(Request $request)
+    {
+        try {
+            $user = new User();
+            $user->fill([
+                'email' => $request->input('email'),
+                'last_name' => $request->input('last_name'),
+                'first_name' => $request->input('first_name'),
+                'password' => Hash::make($request->input('password')),
+                'role_id' => $request->input('role_id')
+            ]);
+            $user->save();
+
+            $log = new Log();
+            $log->fill([
+                'operation' => 'добавление пользователя',
+                'object' => $user->email.' '.$user->last_name.' '.$user->first_name
+            ]);
+            $log->save();
+
+            return $this->login($request);
+        } catch (\Exception $error) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => $error->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -197,8 +227,14 @@ class UserController extends Controller
         }
     }
 
-    public function getUser()
+    public function getUser(Request $request)
     {
-        return response()->json([ 'user' => Auth::user(), 'status' => 'success'], 200);
+        $user = JWTAuth::authenticate($request->token);
+        $user->products = Order::with('product')->where('user_id', $user->id)->get();
+        $user->total_price = 0;
+        foreach ($user->products as $product) {
+            $user->total_price += $product->product->price;
+        }
+        return response()->json([ 'user' => $user], 200);
     }
 }

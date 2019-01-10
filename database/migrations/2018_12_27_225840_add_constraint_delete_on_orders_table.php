@@ -35,7 +35,8 @@ class AddConstraintDeleteOnOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['user_id', 'product_id']);
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['product_id']);
         });
     }
 }

@@ -111,10 +111,10 @@
             async remove(id) {
                 let response = await axios.post('/screens/delete/' + id);
                 if (response.data.status === 'success') {
-                    this.$swal('Успешно!', 'Запись об озвучке успешно удалена!', 'success');
+                    this.$swal('Успешно!', 'Скриншот успешно удален!', 'success');
                     this.loadData();
                 } else {
-                    this.$swal('Ошибка!', 'Не удалось удалить запись об озвучке!', 'error');
+                    this.$swal('Ошибка!', 'Не удалось удалить скриншот!', 'error');
                 }
             },
 

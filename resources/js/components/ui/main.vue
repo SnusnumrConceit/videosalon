@@ -1,31 +1,31 @@
 <template>
     <div class="row">
-        <!--<div class="collapse navbar-collapse col-md-12" id="navbarSupportedContent">-->
-            <!--&lt;!&ndash; Right Side Of Navbar &ndash;&gt;-->
-            <!--<ul class="navbar-nav mr-auto pull-right" v-if="token && user">-->
+        <div class="collapse navbar-collapse col-md-12" id="navbarSupportedContent">
+            <!-- Right Side Of Navbar -->
+            <ul class="navbar-nav mr-auto pull-right" v-if="! token">
 
-                <!--<li class="nav-item">-->
-                    <!--<a>-->
-                        <!--{{ user.last_name + ' ' + user.first_name }}-->
-                    <!--</a>-->
-                <!--</li>-->
-                <!--<li class="nav-item">-->
-                    <!--<router-link to="/logout">-->
-                        <!--Выйти-->
-                    <!--</router-link>-->
-                <!--</li>-->
-            <!--</ul>-->
-        <!--</div>-->
+                <li class="nav-item">
+                    <router-link to="/login">
+                        Войти
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link to="/registration">
+                        Регистрация
+                    </router-link>
+                </li>
+            </ul>
+        </div>
         <div class="col-md-12">
             <div class="products-section" v-if="products.length" style="display: inline-flex">
                 <div class="card col-md-2" v-for="product in products">
                     <h4 class="card-title">{{ product.name }}</h4>
                     <img class="card-img-bottom" :src="product.cover" alt="Подробнее" style="width:100%; cursor: pointer" @click="$router.push({ path: '/movie/' + product.id })">
                     <div class="card-body">
-                        <button class="btn btn-outline-danger" v-if="product.activity === '1'">
+                        <button class="btn btn-outline-danger" v-if="product.activity === '1'" @click="makeOrder(product.id)">
                             На прокат
                         </button>
-                        <button class="btn btn-outline-danger" v-else-if="product.activity === '2'">
+                        <button class="btn btn-outline-danger" v-else-if="product.activity === '2'" @click="makeOrder(product.id)">
                             Купить
                         </button>
                         <span>{{ product.price }} руб.</span>
@@ -92,7 +92,6 @@
                 const response = await axios.get('/auth');
                 if (! response.status) throw response;
                 if (response.data.user === null) {
-                    console.log(response.data.user);
                     return false;
                 }
                 this.setUser(response.data.user);
@@ -113,6 +112,27 @@
                     is_search: false,
                 };
                 this.switchPage(1);
+            },
+
+            async makeOrder(id) {
+                if (! this.user.length) {
+                    if (this.user.role_id === 2 ){
+                        this.$swal('Внимание!', 'Администратор не может арендовать или приобрести фильм.', 'warning');
+                        return false;
+                    }
+                    if (this.user.role_id !== 1) {
+                        this.$swal('Внимание!', 'Чтобы совершить покупку или взять в аренду фильм необходимо авторизоваться', 'warning');
+                        return false;
+                    }
+                }
+                const response = await axios.post('/orders/create', { user_id: this.user.id, product_id: id });
+                if (response.status === 200) {
+                    this.$swal('Успешно', 'Фильм успешно добавлен в личный кабинет!', 'success');
+                    return true;
+                }  else {
+                    this.$swal('Ошибка!', 'Не удалось совершить операцию. Повторите позднее.', 'error');
+                    return false;
+                }
             },
 
             async searchData() {
@@ -143,9 +163,9 @@
         },
 
         created() {
-            if (! this.user.length) {
-                this.getUser();
-            }
+            // if (! this.user.length) {
+            //     this.getUser();
+            // }
             this.loadProducts();
         },
         mounted() {

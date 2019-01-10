@@ -22,6 +22,13 @@ class CreateVideosTable extends Migration
             $table->unsignedInteger('product_id')
                 ->comment('идентификатор продукта');
         });
+
+        Schema::table('videos', function (Blueprint $table) {
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products')
+                ->onDelete('cascade');
+        });
     }
 
     /**
@@ -31,9 +38,9 @@ class CreateVideosTable extends Migration
      */
     public function down()
     {
-//        Schema::table('videos', function (Blueprint $table) {
-//            $table->dropForeign(['product_id']);
-//        });
+        Schema::table('videos', function (Blueprint $table) {
+            $table->dropForeign(['product_id']);
+        });
 
         Schema::dropIfExists('videos');
     }

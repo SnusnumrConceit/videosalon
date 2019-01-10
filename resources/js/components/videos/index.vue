@@ -113,7 +113,7 @@
             async remove(id) {
                 let response = await axios.post('/videos/delete/' + id);
                 if (response.data.status === 'success') {
-                    this.$swal('Успешно!', 'Трейл успешно удалён!', 'success');
+                    this.$swal('Успешно!', 'Трейлер успешно удалён!', 'success');
                     this.loadData();
                 } else {
                     this.$swal('Ошибка!', 'Не удалось удалить трейлер!', 'error');

@@ -102,6 +102,7 @@ Route::group(['prefix' => 'orders'], function () {
     Route::post('/delete/{id}', 'OrderController@destroy')
         ->where('id', '[0-9]+');
     Route::get('/form_info', 'OrderController@form_info');
+    Route::post('/buy', 'OrderController@buy');
 });
 
 Auth::routes();
@@ -109,4 +110,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/login', 'UserController@login');
 Route::post('/logout', 'UserController@logout');
-Route::get('/auth', 'UserController@getUser');
+Route::post('/registration', 'UserController@registration');
+Route::post('/auth', 'UserController@getUser');

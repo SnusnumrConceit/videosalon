@@ -3,12 +3,25 @@
         <div class="row">
             <div class="collapse navbar-collapse col-md-12" id="navbarSupportedContent">
                 <!-- Right Side Of Navbar -->
+                <ul class="navbar-nav mr-auto pull-right" v-if="! token">
+
+                    <li class="nav-item">
+                        <router-link to="/login">
+                            Войти
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link to="/registration">
+                            Регистрация
+                        </router-link>
+                    </li>
+                </ul>
                 <ul class="navbar-nav mr-auto pull-right" v-if="token && user">
 
                     <li class="nav-item">
-                        <a>
+                        <router-link :to="'/cabinet/'+ user.id">
                             {{ user.last_name + ' ' + user.first_name }}
-                        </a>
+                        </router-link>
                     </li>
                     <li class="nav-item">
                         <router-link to="/logout">
@@ -18,7 +31,7 @@
                 </ul>
             </div>
             <div class="authenticable col-md-12" v-if="token && user">
-                <div class="links" style="float: left">
+                <div class="links" style="float: left" v-if="user.role_id === 2">
                     <div class="list-group">
                         <router-link to="/admin/products" class="list-group-item list-group-item-action">Фильмы</router-link>
                         <router-link to="/admin/genres" class="list-group-item list-group-item-action">Жанры</router-link>
@@ -55,7 +68,7 @@
                 setToken: 'setToken'
             }),
             async getUser() {
-                const response = await axios.get('/auth');
+                const response = await axios.post('/auth', { token: localStorage.getItem('token')} );
                 if (! response.status) throw response;
                 if (response.data.user === null) {
                     this.$router.push({ path: '/'});

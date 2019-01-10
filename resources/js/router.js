@@ -27,7 +27,8 @@ import Logout from './components/auth/logout.vue';
 //UI
 import UI from './components/ui/main.vue';
 import Cabinet from './components/ui/cabinet.vue';
-import ProductDetail from './components/ui/product_detail.vue'
+import ProductDetail from './components/ui/product_detail.vue';
+import Registration from './components/auth/registration';
 
 import store from './store/modules/auth.js';
 
@@ -62,6 +63,10 @@ export const routes = [
     {
         path: '/movie/:id',
         component: ProductDetail,
+    },
+    {
+        path: '/registration',
+        component: Registration
     },
     {
         path: '/admin/users',

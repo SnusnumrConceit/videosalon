@@ -7,6 +7,8 @@ use App\Model\Product;
 use App\User;
 use Illuminate\Http\Request;
 use App\Model\Log;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use JWTAuth;
 
 class OrderController extends Controller
 {
@@ -170,5 +172,17 @@ class OrderController extends Controller
                 'msg' => $error->getMessage()
             ], 500);
         }
+    }
+
+    public function buy(Request $request)
+    {
+        if (! $user = JWTAuth::authenticate($request->token)) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Вы не авторизовались'
+            ], 500);
+        }
+        Order::where('user_id', $user->id)->delete();
+        return response()->json([], 200);
     }
 }
